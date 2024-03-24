@@ -161,7 +161,7 @@ public class ModelParser {
                 Point cubeTo = new Vec(cubeFrom.x() + cubeSize.x(), cubeFrom.y() + cubeSize.y(), cubeFrom.z() + cubeSize.z());
 
                 Point cubeRotation = new Vec(-cube.rotation.x(), -cube.rotation.y(), cube.rotation.z());
-                HashMap<TextureFace, UV> uvs = new HashMap<>();
+                Map<TextureFace, UV> uvs = new EnumMap<>(TextureFace.class);
 
                 for (TextureFace face : cube.uv.keySet()) {
                     UV newUv = convertUV(cube.uv.get(face), textureWidth, textureHeight, face == TextureFace.up || face == TextureFace.down);
@@ -395,8 +395,8 @@ public class ModelParser {
 
     private static JsonObject facesAsJson(Map<TextureFace, UV> faces) {
         JsonObjectBuilder res = Json.createObjectBuilder();
-        for (TextureFace face : faces.keySet()) {
-            res.add(face.name(), faces.get(face).asJson());
+        for (Map.Entry<TextureFace, UV> entrySet : faces.entrySet()) {
+            res.add(entrySet.getKey().name(), entrySet.getValue().asJson());
         }
 
         return res.build();
@@ -411,7 +411,7 @@ public class ModelParser {
     }
 
     private static Map<TextureFace, UV> getUV(JsonObject uv) {
-        Map<TextureFace, UV> res = new HashMap<>();
+        Map<TextureFace, UV> res = new EnumMap<>(TextureFace.class);
 
         for (TextureFace face : TextureFace.values()) {
             String faceName = face.name().toLowerCase(Locale.ROOT);
