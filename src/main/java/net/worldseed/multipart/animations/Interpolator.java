@@ -4,25 +4,34 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
 import net.worldseed.multipart.Quaternion;
 import net.worldseed.multipart.mql.MQLPoint;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Interpolator {
-    private static StartEnd getStartEnd(double time, LinkedHashMap<Double, BoneAnimationImpl.PointInterpolation> transform, double animationTime) {
-        if (transform.isEmpty())
-            return new StartEnd(new BoneAnimationImpl.PointInterpolation(MQLPoint.ZERO, "linear"), new BoneAnimationImpl.PointInterpolation(MQLPoint.ZERO, "linear"), 0, 0);
+
+    private static final String LINEAR_KEY = "linear";
+
+    private static @NotNull StartEnd getStartEnd(double time, LinkedHashMap<Double, BoneAnimationImpl.PointInterpolation> transform, double animationTime) {
+        if (transform.isEmpty()) {
+            return new StartEnd(
+                    new BoneAnimationImpl.PointInterpolation(MQLPoint.ZERO, LINEAR_KEY),
+                    new BoneAnimationImpl.PointInterpolation(MQLPoint.ZERO, LINEAR_KEY),
+                    0,
+                    0
+            );
+        }
         BoneAnimationImpl.PointInterpolation lastPoint = transform.get(transform.keySet().iterator().next());
         double lastTime = 0;
 
-        for (Double keyTime : transform.keySet()) {
-            if (keyTime > time) {
-                return new StartEnd(lastPoint, transform.get(keyTime), lastTime, keyTime);
+        for (Map.Entry<Double, BoneAnimationImpl.PointInterpolation> entries : transform.entrySet()) {
+            if (entries.getKey() > time) {
+                return new StartEnd(lastPoint, entries.getValue(), lastTime, entries.getKey());
             }
-
-            lastPoint = transform.get(keyTime);
-            lastTime = keyTime;
+            lastPoint = entries.getValue();
+            lastTime = entries.getKey();
         }
-
         return new StartEnd(lastPoint, lastPoint, lastTime, animationTime);
     }
 
@@ -70,7 +79,7 @@ public class Interpolator {
 
         double timePercent = (time - points.st) / timeDiff;
 
-        if (points.s.lerp().equals("linear")) {
+        if (points.s.lerp().equals(LINEAR_KEY)) {
             Vec ps = Vec.fromPoint(points.s.p().evaluate(time));
             Vec pe = Vec.fromPoint(points.e.p().evaluate(time));
 
