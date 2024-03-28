@@ -70,24 +70,15 @@ public class ModelLoader {
     }
 
     public static void addToTranslationCache(String key, String model, FrameProvider val) {
-        if (!interpolationTranslateCache.containsKey(model))
-            interpolationTranslateCache.put(model, new HashMap<>());
-
-        interpolationTranslateCache.get(model).put(key, val);
+        interpolationTranslateCache.computeIfAbsent(model, k -> new HashMap<>()).put(key, val);
     }
 
     public static void addToRotationCache(String key, String model, FrameProvider val) {
-        if (!interpolationRotateCache.containsKey(model))
-            interpolationRotateCache.put(model, new HashMap<>());
-
-        interpolationRotateCache.get(model).put(key, val);
+        interpolationRotateCache.computeIfAbsent(model, k -> new HashMap<>()).put(key, val);
     }
 
     public static void addToScaleCache(String key, String model, FrameProvider val) {
-        if (!interpolationScaleCache.containsKey(model))
-            interpolationScaleCache.put(model, new HashMap<>());
-
-        interpolationScaleCache.get(model).put(key, val);
+        interpolationScaleCache.computeIfAbsent(model, k -> new HashMap<>()).put(key, val);
     }
 
     public static FrameProvider getCacheRotation(String key, String model) {
