@@ -43,7 +43,8 @@ dependencies {
 
     implementation(libs.commons.io)
     implementation(libs.zt.zip)
-    implementation(libs.javax.json)
+    implementation(libs.javax.json.api)
+    implementation(libs.glassfish.json)
     implementation(libs.mql)
 
     testImplementation(libs.minestom)
