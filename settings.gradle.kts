@@ -8,7 +8,7 @@ dependencyResolutionManagement {
             version("commons-io", "2.11.0")
             version("zt-zip", "1.8")
             version("javax.json", "1.1.4")
-            version("mql", "1.0.1")
+            version("mql", "1.1.0")
             library("junit.api", "org.junit.jupiter", "junit-jupiter-api").versionRef("junit")
             library("junit.engine", "org.junit.jupiter", "junit-jupiter-engine").versionRef("junit")
 
