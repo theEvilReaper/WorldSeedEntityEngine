@@ -1,13 +1,13 @@
 plugins {
-    id("java")
+    java
     `maven-publish`
     signing
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
     withSourcesJar()
     withJavadocJar()
 }
@@ -39,21 +39,20 @@ publishing {
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    compileOnly(libs.minestom)
 
-    compileOnly("net.minestom:minestom-snapshots:2f5bb97908")
-    testImplementation("net.minestom:minestom-snapshots:2f5bb97908")
+    implementation(libs.commons.io)
+    implementation(libs.zt.zip)
+    implementation(libs.javax.json)
+    implementation(libs.mql)
 
-    implementation("commons-io:commons-io:2.11.0")
-    implementation("org.zeroturnaround:zt-zip:1.8")
-
-    implementation("javax.json:javax.json-api:1.1.4")
-    implementation("org.glassfish:javax.json:1.1.4")
-
-    implementation("dev.hollowcube:mql:1.0.1")
+    testImplementation(libs.minestom)
+    testImplementation(libs.junit.api)
+    testRuntimeOnly(libs.junit.engine)
 }
 
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
+tasks {
+    test {
+        useJUnitPlatform()
+    }
 }
