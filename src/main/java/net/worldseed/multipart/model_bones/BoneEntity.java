@@ -6,8 +6,8 @@ import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.entity.Player;
 import net.minestom.server.network.packet.server.LazyPacket;
 import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
-import net.minestom.server.tag.Tag;
 import net.worldseed.multipart.GenericModel;
+import net.worldseed.multipart.util.WSEETags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -18,7 +18,7 @@ public class BoneEntity extends LivingEntity {
     public BoneEntity(@NotNull EntityType entityType, GenericModel model) {
         super(entityType);
         this.setAutoViewable(false);
-        setTag(Tag.String("WSEE"), "part");
+        this.setTag(WSEETags.WSEE_TAG, "part");
         this.model = model;
 
         this.setNoGravity(true);

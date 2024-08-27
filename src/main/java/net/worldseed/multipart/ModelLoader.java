@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import net.worldseed.multipart.animations.FrameProvider;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -38,14 +38,10 @@ public class ModelLoader {
 
         JsonObject loadedAnimations1;
 
-        try {
-            loadedAnimations1 = GSON
-                    .fromJson(
-                            new InputStreamReader(new FileInputStream(ModelEngine.getAnimationPath(toLoad))),
-                            JsonObject.class
-                    );
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(ModelEngine.getAnimationPath(toLoad)))) {
+            loadedAnimations1 = GSON.fromJson(reader, JsonObject.class);
+        } catch (IOException exception) {
+            exception.printStackTrace();
             loadedAnimations1 = null;
         }
 
@@ -58,10 +54,10 @@ public class ModelLoader {
             return loadedModels.get(id);
 
         JsonObject loadedModel1;
-        try {
-            loadedModel1 = GSON.fromJson(new InputStreamReader(new FileInputStream(ModelEngine.getGeoPath(id))), JsonObject.class);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(ModelEngine.getGeoPath(id)))) {
+            loadedModel1 = GSON.fromJson(reader, JsonObject.class);
+        } catch (IOException exception) {
+            exception.printStackTrace();
             loadedModel1 = null;
         }
 
@@ -111,11 +107,15 @@ public class ModelLoader {
     public static Map<String, JsonObject> parseAnimations(String animationString) {
         Map<String, JsonObject> res = new LinkedHashMap<>();
 
-        JsonObject animations = GSON.fromJson(new StringReader(animationString), JsonObject.class);
+        JsonObject animations;
+
+        try (final StringReader reader = new StringReader(animationString)) {
+            animations = GSON.fromJson(reader, JsonObject.class);
+        }
+
         for (Map.Entry<String, JsonElement> animation : animations.get("animations").getAsJsonObject().entrySet()) {
             res.put(animation.getKey(), animation.getValue().getAsJsonObject());
         }
-
         return res;
     }
 

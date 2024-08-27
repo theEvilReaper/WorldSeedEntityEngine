@@ -33,15 +33,12 @@ public class CachedFrameProvider implements FrameProvider {
     private Point calculateTransform(int tick, LinkedHashMap<Double, BoneAnimationImpl.PointInterpolation> transform, ModelLoader.AnimationType type, double length) {
         double toInterpolate = tick * 50.0 / 1000;
 
-        if (type == ModelLoader.AnimationType.ROTATION) {
-            return Interpolator.interpolateRotation(toInterpolate, transform, length).mul(RotationMul);
-        } else if (type == ModelLoader.AnimationType.SCALE) {
-            return Interpolator.interpolateScale(toInterpolate, transform, length);
-        } else if (type == ModelLoader.AnimationType.TRANSLATION) {
-            return Interpolator.interpolateTranslation(toInterpolate, transform, length).mul(TranslationMul);
-        }
-
-        return Vec.ZERO;
+        return switch (type) {
+            case ROTATION -> Interpolator.interpolateRotation(toInterpolate, transform, length).mul(RotationMul);
+            case SCALE -> Interpolator.interpolateScale(toInterpolate, transform, length);
+            case TRANSLATION -> Interpolator.interpolateTranslation(toInterpolate, transform, length).mul(TranslationMul);
+            default -> Vec.ZERO;
+        };
     }
 
     @Override

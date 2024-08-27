@@ -68,7 +68,7 @@ public class GemGolemMob extends EntityCreature {
 
                     damage(event.getDamage().getType(), event.getDamage().getAmount());
                 })
-                .addListener(ModelInteractEvent.class, event -> model.mountEntity(SEAT, event.getInteracted()))
+                .addListener(ModelInteractEvent.class, event -> model.mountEntity(SEAT, event.interactor()))
                 .addListener(ModelDismountEvent.class, event -> model.dismountEntity(SEAT, event.rider()))
                 .addListener(ModelControlEvent.class, event -> {
                     controlGoal.setForward(event.forward());

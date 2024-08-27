@@ -28,8 +28,10 @@ public class ComputedFrameProvider implements FrameProvider {
         double toInterpolate = tick * 50.0 / 1000;
         var point = first.p().evaluate(toInterpolate);
 
-        if (type == ModelLoader.AnimationType.ROTATION) return point.mul(RotationMul);
-        if (type == ModelLoader.AnimationType.TRANSLATION) return point.mul(TranslationMul).mul(0.25);
-        return point;
+        return switch (type) {
+            case ROTATION -> point.mul(RotationMul);
+            case TRANSLATION -> point.mul(TranslationMul).mul(0.25);
+            default -> point;
+        };
     }
 }
