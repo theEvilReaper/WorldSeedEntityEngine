@@ -1,23 +1,44 @@
 package net.worldseed.multipart.animations;
 
 import com.google.gson.JsonElement;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
 public interface AnimationHandler {
-    void registerAnimation(String name, JsonElement animation, int priority);
 
-    void registerAnimation(ModelAnimation animator);
+    /**
+     * Register a new animation to the handler.
+     *
+     * @param name      name of the animation
+     * @param animation json element of the animation
+     * @param priority  priority of the animation
+     */
+    void registerAnimation(@NotNull String name, @NotNull JsonElement animation, int priority);
+
+    /**
+     * Register a new animation to the handler.
+     *
+     * @param animator animation to register
+     */
+    void registerAnimation(@NotNull ModelAnimation animator);
 
     /**
      * Play an animation on repeat
      *
      * @param animation name of animation to play
+     * @throws IllegalArgumentException if the animation does not exist
      */
-    void playRepeat(String animation) throws IllegalArgumentException;
+    void playRepeat(@NotNull String animation) throws IllegalArgumentException;
 
-    void playRepeat(String animation, AnimationDirection direction) throws IllegalArgumentException;
+    /**
+     * Play an animation on repeat
+     *
+     * @param animation name of animation to play
+     * @param direction direction of the animation
+     * @throws IllegalArgumentException if the animation does not exist
+     */
+    void playRepeat(@NotNull String animation, @NotNull AnimationDirection direction) throws IllegalArgumentException;
 
     /**
      * Stop a repeating animation

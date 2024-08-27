@@ -8,24 +8,20 @@ import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
 import net.worldseed.multipart.GenericModel;
 import net.worldseed.multipart.ModelLoader;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 public class AnimationHandlerImpl implements AnimationHandler {
+
     private final GenericModel model;
     private final Task task;
-
     private final Map<String, ModelAnimation> animations = new ConcurrentHashMap<>();
-    private final TreeMap<Integer, ModelAnimation> repeating = new TreeMap<>();
-    private String playingOnce = null;
-
+    private final NavigableMap<Integer, ModelAnimation> repeating = new TreeMap<>();
     private final Map<String, Runnable> callbacks = new ConcurrentHashMap<>();
     private final Map<String, Integer> callbackTimers = new ConcurrentHashMap<>();
+    private String playingOnce = null;
 
     public AnimationHandlerImpl(GenericModel model) {
         this.model = model;
@@ -44,30 +40,31 @@ public class AnimationHandlerImpl implements AnimationHandler {
     }
 
     @Override
-    public void registerAnimation(String name, JsonElement animation, int priority) {
+    public void registerAnimation(@NotNull String name, @NotNull JsonElement animation, int priority) {
         final JsonElement animationLength = animation.getAsJsonObject().get("animation_length");
         final double length = animationLength == null ? 0 : animationLength.getAsDouble();
-
-        HashSet<BoneAnimation> animationSet = new HashSet<>();
+        Set<BoneAnimation> animationSet = new HashSet<>();
         for (Map.Entry<String, JsonElement> boneEntry : animation.getAsJsonObject().get("bones").getAsJsonObject().entrySet()) {
             String boneName = boneEntry.getKey();
             var bone = model.getPart(boneName);
             if (bone == null) continue;
 
-            JsonElement animationRotation = boneEntry.getValue().getAsJsonObject().get("rotation");
-            JsonElement animationPosition = boneEntry.getValue().getAsJsonObject().get("position");
-            JsonElement animationScale = boneEntry.getValue().getAsJsonObject().get("scale");
+            final JsonObject boneEntryObject = boneEntry.getValue().getAsJsonObject();
 
-            if (animationRotation != null) {
-                BoneAnimationImpl boneAnimation = new BoneAnimationImpl(model.getId(), name, boneName, bone, animationRotation, ModelLoader.AnimationType.ROTATION, length);
+            if (boneEntryObject.has("rotation")) {
+                JsonElement animationRotation = boneEntryObject.get("rotation");
+                BoneAnimationImpl boneAnimation = BoneAnimationImpl.ofRotation(model, name, bone, animationRotation, length);
                 animationSet.add(boneAnimation);
             }
-            if (animationPosition != null) {
-                BoneAnimationImpl boneAnimation = new BoneAnimationImpl(model.getId(), name, boneName, bone, animationPosition, ModelLoader.AnimationType.TRANSLATION, length);
+
+            if (boneEntryObject.get("position") != null) {
+                JsonElement animationPosition = boneEntryObject.get("position");
+                BoneAnimationImpl boneAnimation = BoneAnimationImpl.ofTranslation(model, name, bone, animationPosition, length);
                 animationSet.add(boneAnimation);
             }
-            if (animationScale != null) {
-                BoneAnimationImpl boneAnimation = new BoneAnimationImpl(model.getId(), name, boneName, bone, animationScale, ModelLoader.AnimationType.SCALE, length);
+            if (boneEntryObject.has("scale")) {
+                JsonElement animationScale = boneEntryObject.get("scale");
+                BoneAnimationImpl boneAnimation = BoneAnimationImpl.ofScale(model, name, bone, animationScale, length);
                 animationSet.add(boneAnimation);
             }
         }
@@ -76,16 +73,16 @@ public class AnimationHandlerImpl implements AnimationHandler {
     }
 
     @Override
-    public void registerAnimation(ModelAnimation animator) {
+    public void registerAnimation(@NotNull ModelAnimation animator) {
         animations.put(animator.name(), animator);
     }
 
-    public void playRepeat(String animation) throws IllegalArgumentException {
+    public void playRepeat(@NotNull String animation) throws IllegalArgumentException {
         playRepeat(animation, AnimationDirection.FORWARD);
     }
 
     @Override
-    public void playRepeat(String animation, AnimationDirection direction) throws IllegalArgumentException {
+    public void playRepeat(@NotNull String animation, @NotNull AnimationDirection direction) throws IllegalArgumentException {
         if (this.animationPriorities().get(animation) == null)
             throw new IllegalArgumentException("Animation " + animation + " does not exist");
         var modelAnimation = this.animations.get(animation);
@@ -143,7 +140,6 @@ public class AnimationHandlerImpl implements AnimationHandler {
 
         AnimationDirection currentDirection = modelAnimation.direction();
         modelAnimation.setDirection(direction);
-
         if (this.callbacks.containsKey(animation)) {
             this.callbacks.get(animation).run();
         }
@@ -210,9 +206,7 @@ public class AnimationHandlerImpl implements AnimationHandler {
             if (callbacks.size() + repeating.size() == 0) return;
             this.model.draw();
 
-            this.animations.forEach((animation, animations) -> {
-                animations.tick();
-            });
+            this.animations.forEach((animation, animations) -> animations.tick());
         } catch (Exception e) {
             e.printStackTrace();
         }

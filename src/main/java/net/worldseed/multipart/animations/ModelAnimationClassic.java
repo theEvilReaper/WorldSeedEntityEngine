@@ -1,6 +1,5 @@
 package net.worldseed.multipart.animations;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class ModelAnimationClassic implements ModelAnimation {
@@ -10,7 +9,7 @@ public class ModelAnimationClassic implements ModelAnimation {
     private AnimationHandler.AnimationDirection direction;
     private final Set<BoneAnimation> boneAnimations;
 
-    public ModelAnimationClassic(String name, int animationTime, int priority, HashSet<BoneAnimation> animationSet) {
+    public ModelAnimationClassic(String name, int animationTime, int priority, Set<BoneAnimation> animationSet) {
         this.direction = AnimationHandler.AnimationDirection.PAUSE;
         this.animationTime = animationTime;
         this.boneAnimations = animationSet;
