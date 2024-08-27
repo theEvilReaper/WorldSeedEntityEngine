@@ -57,7 +57,7 @@ public class AnimationHandlerImpl implements AnimationHandler {
                 animationSet.add(boneAnimation);
             }
 
-            if (boneEntryObject.get("position") != null) {
+            if (boneEntryObject.has("position")) {
                 JsonElement animationPosition = boneEntryObject.get("position");
                 BoneAnimationImpl boneAnimation = BoneAnimationImpl.ofTranslation(model, name, bone, animationPosition, length);
                 animationSet.add(boneAnimation);
