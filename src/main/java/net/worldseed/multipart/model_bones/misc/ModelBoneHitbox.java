@@ -20,6 +20,7 @@ import net.worldseed.multipart.model_bones.BoneEntity;
 import net.worldseed.multipart.model_bones.ModelBone;
 import net.worldseed.multipart.model_bones.ModelBoneImpl;
 import net.worldseed.multipart.model_bones.bone_types.HitboxBone;
+import net.worldseed.multipart.util.WSEETags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -30,7 +31,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ModelBoneHitbox extends ModelBoneImpl implements HitboxBone {
     private static final int INTERPOLATE_TICKS = 2;
-    private static final Tag<String> WSEE = Tag.String("WSEE");
     private final JsonArray cubes;
     private final Collection<ModelBone> illegitimateChildren = new ConcurrentLinkedDeque<>();
     private final Point orgPivot;
@@ -62,7 +62,7 @@ public class ModelBoneHitbox extends ModelBoneImpl implements HitboxBone {
                     }
                 };
 
-                this.stand.setTag(WSEE, "hitbox");
+                this.stand.setTag(WSEETags.WSEE_TAG, "hitbox");
                 this.offset = newOffset;
 
                 InteractionMeta meta = (InteractionMeta) this.stand.getEntityMeta();

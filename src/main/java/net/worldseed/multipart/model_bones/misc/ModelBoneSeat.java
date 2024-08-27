@@ -15,8 +15,8 @@ import net.worldseed.multipart.model_bones.BoneEntity;
 import net.worldseed.multipart.model_bones.ModelBone;
 import net.worldseed.multipart.model_bones.ModelBoneImpl;
 import net.worldseed.multipart.model_bones.bone_types.RideableBone;
+import net.worldseed.multipart.util.WSEETags;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -28,7 +28,7 @@ public class ModelBoneSeat extends ModelBoneImpl implements RideableBone {
 
         if (this.offset != null) {
             this.stand = new BoneEntity(EntityType.ZOMBIE, model);
-            this.stand.setTag(Tag.String("WSEE"), "seat");
+            this.stand.setTag(WSEETags.WSEE_TAG, "seat");
             stand.setInvisible(true);
         }
     }
