@@ -4,20 +4,10 @@ import net.minestom.server.entity.Entity;
 import net.worldseed.multipart.GenericModel;
 import org.jetbrains.annotations.NotNull;
 
-public record ModelDismountEvent(GenericModel model, Entity rider) implements ModelEvent {
-    public ModelDismountEvent(@NotNull GenericModel model, Entity rider) {
-        this.rider = rider;
-        this.model = model;
-    }
-
-    @Override
-    public @NotNull GenericModel model() {
-        return model;
-    }
-
-    @Override
-    public @NotNull Entity rider() {
-        return rider;
-    }
-}
+/**
+ * The event is fired from the engine when a rider dismounts from a model
+ * @param model the model that the rider dismounted from
+ * @param rider the entity that dismounted from the model
+ */
+public record ModelDismountEvent(@NotNull GenericModel model, @NotNull Entity rider) implements ModelEvent { }
 
