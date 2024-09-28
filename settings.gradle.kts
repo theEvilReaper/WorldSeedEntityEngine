@@ -6,7 +6,7 @@ dependencyResolutionManagement {
             version("junit", "5.11.0")
             version("minestom", "2f5bb97908")
             version("commons-io", "2.11.0")
-            version("zt-zip", "1.8")
+            version("zt-zip", "1.17")
             version("javax.json", "1.1.4")
             version("mql", "1.0.1")
             library("junit.api", "org.junit.jupiter", "junit-jupiter-api").versionRef("junit")
