@@ -56,14 +56,14 @@ public class ModelEngine {
     });
     private static final EventListener<PlayerEntityInteractEvent> playerInteractListener = EventListener.of(PlayerEntityInteractEvent.class, event -> {
         if (event.getTarget() instanceof BoneEntity bone) {
-            ModelInteractEvent modelInteractEvent = new ModelInteractEvent(bone.getModel(), event.getPlayer());
+            ModelInteractEvent modelInteractEvent = new ModelInteractEvent(bone.getModel(), event, bone);
             EventDispatcher.call(modelInteractEvent);
         }
     });
     private static final EventListener<EntityDamageEvent> entityDamageListener = EventListener.of(EntityDamageEvent.class, event -> {
         if (event.getEntity() instanceof BoneEntity bone) {
             event.setCancelled(true);
-            ModelDamageEvent modelDamageEvent = new ModelDamageEvent(bone.getModel(), event);
+            ModelDamageEvent modelDamageEvent = new ModelDamageEvent(bone.getModel(), event, bone);
             MinecraftServer.getGlobalEventHandler().call(modelDamageEvent);
         }
     });
@@ -115,12 +115,12 @@ public class ModelEngine {
         return blockMappings.get(model + "/" + name);
     }
 
-    public static String getGeoPath(String id) {
-        return modelPath + "/" + id + "/model.geo.json";
+    public static Path getGeoPath(String id) {
+        return modelPath.resolve(id).resolve("model.geo.json");
     }
 
-    public static String getAnimationPath(String id) {
-        return modelPath + "/" + id + "/model.animation.json";
+    public static Path getAnimationPath(String id) {
+        return modelPath.resolve(id).resolve("model.animation.json");
     }
 
     public static Optional<Point> getPos(JsonElement pivot) {
