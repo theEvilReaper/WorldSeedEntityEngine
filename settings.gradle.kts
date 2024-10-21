@@ -3,7 +3,7 @@ rootProject.name = "WorldSeedEntityEngine"
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("junit", "5.11.2")
+            version("junit", "5.11.3")
             version("minestom", "2f5bb97908")
             version("commons-io", "2.11.0")
             version("zt-zip", "1.8")
